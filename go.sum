@@ -1,3 +1,5 @@
+github.com/faycheng/esc v0.2.0 h1:7R/NzH2Fq8/dlDepiLbfbIgtbrDNwf0GQO9mbuTSUOM=
+github.com/faycheng/esc v0.2.0/go.mod h1:IUEezEKXQUH3YQhUmMjJhRKKdGsOAOj3GgOxuMTD0HU=
 github.com/mjibson/esc v0.2.0 h1:k96hdaR9Z+nMcnDwNrOvhdBqtjyMrbVyxLpsRCdP2mA=
 github.com/mjibson/esc v0.2.0/go.mod h1:9Hw9gxxfHulMF5OJKCyhYD7PzlSdhzXyaGEBRPH1OPs=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
