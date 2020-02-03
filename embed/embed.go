@@ -3,7 +3,6 @@ package embed
 
 import (
 	"bytes"
-	"compress/gzip"
 	"encoding/base64"
 	"fmt"
 	"io"
@@ -104,10 +103,6 @@ func Run(conf *Config, out io.Writer) error {
 			return err
 		}
 	}
-	gzipLevel := gzip.BestCompression
-	if conf.NoCompression {
-		gzipLevel = gzip.NoCompression
-	}
 	directories := make([]*_escDir, 0, 10)
 	for _, base := range conf.Files {
 		files := []string{base}
@@ -169,7 +164,7 @@ func Run(conf *Config, out io.Writer) error {
 				if modTime != nil {
 					escFile.ModTime = *modTime
 				}
-				if err := escFile.fillCompressed(gzipLevel); err != nil {
+				if err := escFile.fillCompressed(); err != nil {
 					return err
 				}
 				escFiles = append(escFiles, escFile)
@@ -206,30 +201,12 @@ func canonicFileName(fname, prefix string) string {
 	return path.Join("/", strings.TrimPrefix(fpath, prefix))
 }
 
-func (f *_escFile) fillCompressed(gzipLevel int) error {
-	var buf bytes.Buffer
-	gw, err := gzip.NewWriterLevel(&buf, gzipLevel)
-	if err != nil {
-		return err
-	}
-	if _, err := gw.Write(f.Data); err != nil {
-		return err
-	}
-	if err := gw.Close(); err != nil {
-		return err
-	}
+func (f *_escFile) fillCompressed() error {
 	var b bytes.Buffer
 	b64 := base64.NewEncoder(base64.StdEncoding, &b)
-	b64.Write(buf.Bytes())
+	b64.Write(f.Data)
 	b64.Close()
-	res := "\n"
-	chunk := make([]byte, 80)
-	chunks := make([][]byte, 0)
-	for n, _ := b.Read(chunk); n > 0; n, _ = b.Read(chunk) {
-		chunks = append(chunks, chunk)
-	}
-	res = string(bytes.Join(chunks, []byte("\n")))
-	f.Compressed = res
+	f.Compressed = b.String()
 	return nil
 
 }
@@ -241,7 +218,6 @@ package {{.PackageName}}
 
 import (
 	"bytes"
-	"compress/gzip"
 	"encoding/base64"
 	"io/ioutil"
 	"net/http"
@@ -297,13 +273,8 @@ func (_escStaticFS) prepare(name string) (*_escFile, error) {
 		if f.size == 0 {
 			return
 		}
-		var gr *gzip.Reader
 		b64 := base64.NewDecoder(base64.StdEncoding, bytes.NewBufferString(f.compressed))
-		gr, err = gzip.NewReader(b64)
-		if err != nil {
-			return
-		}
-		f.data, err = ioutil.ReadAll(gr)
+		f.data, err = ioutil.ReadAll(b64)
 	})
 	if err != nil {
 		return nil, err
