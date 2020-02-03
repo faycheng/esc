@@ -249,6 +249,8 @@ import (
 	"path"
 	"sync"
 	"time"
+	"fmt"
+	"io"
 )
 
 type _escLocalFS struct{}
