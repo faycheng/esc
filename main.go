@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/mjibson/esc/embed"
+	"esc/embed"
 )
 
 func main() {
@@ -33,7 +33,6 @@ func main() {
 		}
 		defer out.Close()
 	}
-
 	if err = embed.Run(conf, out); err != nil {
 		log.Fatal(err)
 	}
