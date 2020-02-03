@@ -11,7 +11,7 @@ zero dependencies on packages outside the standard library.
 
 ## Installation
 
-`go get -u github.com/mjibson/esc`
+`go get -u github.com/faycheng/esc`
 
 ## Usage
 
