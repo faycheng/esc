@@ -235,10 +235,11 @@ func (f *_escFile) fillCompressed(gzipLevel int) error {
 	b64.Close()
 	res := "\n"
 	chunk := make([]byte, 80)
+	chunks := make([][]byte, 0)
 	for n, _ := b.Read(chunk); n > 0; n, _ = b.Read(chunk) {
-		res += string(chunk[0:n]) + "\n"
+		chunks = append(chunks, chunk)
 	}
-
+	res = string(bytes.Join(chunks, []byte("\n")))
 	f.Compressed = res
 	return nil
 
