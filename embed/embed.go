@@ -18,7 +18,6 @@ import (
 	"text/template"
 
 	"github.com/pkg/errors"
-	"golang.org/x/tools/imports"
 )
 
 // Config contains all information needed to run esc.
@@ -197,17 +196,7 @@ func Run(conf *Config, out io.Writer) error {
 		Dirs:           directories,
 	})
 
-	fakeOutFileName := "static.go"
-	if conf.OutputFile != "" {
-		fakeOutFileName = conf.OutputFile
-	}
-
-	data, err := imports.Process(fakeOutFileName, buf.Bytes(), nil)
-	if err != nil {
-		return errors.Wrap(err, "imports.Process return error")
-	}
-
-	fmt.Fprint(out, string(data))
+	fmt.Fprint(out, buf.String())
 
 	return nil
 }
